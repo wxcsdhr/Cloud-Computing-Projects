@@ -1,0 +1,11 @@
+ba95d794-e3ad-4211-b951-7935c87ac8b7\:credentialProfileName=default
+cfa43e7f-1aa9-4bc8-8f2f-f82645468271\:credentialProfileName=xiaoche1
+cognitoIdentityId=us-east-1\:fb46e237-9e2e-4a1b-82b1-f82964f7c1c8
+cognitoIdentityPoolId=us-east-1\:d4fdc07f-94fd-4cc6-94fb-f903657f05c1
+credentialProfileAccountIds=ba95d794-e3ad-4211-b951-7935c87ac8b7|db1fdd7d-841f-410d-9384-5d3e9ab6886a|cfa43e7f-1aa9-4bc8-8f2f-f82645468271
+currentAccount=ba95d794-e3ad-4211-b951-7935c87ac8b7
+currentDefaultAccount=ba95d794-e3ad-4211-b951-7935c87ac8b7
+db1fdd7d-841f-410d-9384-5d3e9ab6886a\:credentialProfileName=PrivateAWS
+ec2PreferencesImported=true
+eclipse.preferences.version=1
+mobileAnalyticsClientId=7836fc0c-dd92-4c3b-b61b-b023c2237606

@@ -1,0 +1,4 @@
+
+class Follower {
+  val textFile = sc.textFile("hdfs://...")
+}

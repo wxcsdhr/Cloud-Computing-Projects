@@ -1,0 +1,5 @@
+[0] learn the use of Iterable
+http://www.scala-lang.org/api/current/scala/collection/Iterable.html
+
+[1] learn the example of aggregateMessages
+https://spark.apache.org/docs/latest/graphx-programming-guide#aggregate-messages-aggregatemessages

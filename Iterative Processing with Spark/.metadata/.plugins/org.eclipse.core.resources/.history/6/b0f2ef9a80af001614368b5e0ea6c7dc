@@ -1,0 +1,94 @@
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+import org.apache.spark.SparkConf
+import org.apache.spark.graphx._
+
+
+object Task3 {
+  def main(args: Array[String]){
+    val sc = new SparkContext(new SparkConf().setAppName("task3"))
+    //generate pageRank for each user 
+    val factor = 0.85
+    val its = 10
+    val file = sc.textFile("s3://cmucc-datasets/TwitterGraph.txt")
+    val followers = file.flatMap(line => line.split("\t").slice(0, 1)).distinct()
+    val followees = file.flatMap(line => line.split("\t").slice(1, 2)).distinct()
+    val followeesCount = followees.count()
+    var ranks = (followees++followers).distinct().map(word => (word, 1.0))
+    val map = file.map(line => line.split("\t")).map(line => (line(0), line(1))).distinct
+    val noFollowees = followees.subtract(followers).map(word => (word,""))
+    val noFollowersContributes = followers.subtract(followees).map(word => (word, 0.0))
+    val noFolloweesCount = noFollowees.count()
+    val aggregatedFollowers = (map++noFollowees).groupByKey() // group all followees for one follower
+    val aggregatedFollowersCount = aggregatedFollowers.count()
+    for( it <- 1 to its){
+      //find total weight of people without followees
+      val weights = aggregatedFollowers.join(ranks).flatMap{
+        case(s, (k, v)) =>
+        k.filter { x => x.size == 0 }.map(f => v)
+      }
+      val weight = weights.reduce((a, b) => a + b)/aggregatedFollowersCount
+      val cons = aggregatedFollowers.join(ranks).flatMap{
+        case(s, (k, v)) => 
+          k.filterNot { x => x.size == 0 }.map(follower => (follower, v/(k.size)))
+      }
+      val contributes = cons.reduceByKey(_+_).union(noFollowersContributes)
+      ranks = contributes.map{
+        case(k, v) =>
+        val newRank = 0.15 + 0.85 * (v + weight)
+        (k ,newRank)
+      }
+    }
+    val edgesFile = sc.textFile("hdfs:///input/edges")
+    val propertiesFile = sc.textFile("hdfs:///input/properties")
+    val followers = edgesFile.flatMap(line => line.split("\t").slice(0, 1)).distinct()
+    val followees = edgesFile.flatMap(line => line.split("\t").slice(1, 2)).distinct()
+    val noFollowerMap = followers.subtract(followees).map(followee => (followee.toLong, 0L))
+    val noFolloweeMap = followees.subtract(followers).map(follower => (follower.toLong, (0.0, 0L)))
+    val edgesMap = edgesFile.map(line => line.split("\t")).map(line => (line(0).toLong, line(1).toLong)).distinct
+    val edges = (edgesMap++noFollowerMap)
+    val propertiesMap = propertiesFile.map(line => line.split("\t")).map(line => (line(0).toLong, line(1).toDouble)).distinct
+    val aggregateVertices = propertiesMap.leftOuterJoin(edges).map{
+      case (a, (b, c)) => (a, (b, c.getOrElse(0L)))
+    }
+      val aggregateEdges = edgesMap.map{
+        case(a, b) =>
+          Edge(a, b, "")
+          }
+      val graph = Graph(aggregateVertices, aggregateEdges) // create graph
+      val firstIteration: VertexRDD[(Double, Long)] = graph.aggregateMessages(
+          triplet => {
+            val rank = triplet.dstAttr._1//map(vertex => (vertex, triplet.srcAttr._1))
+            val followee = triplet.dstId
+            triplet.sendToSrc((rank, followee))
+          },
+          (a, b) =>
+            if(a._1 > b._1){
+              (a._1, a._2)
+            }else{
+              (b._1, b._2)
+            }
+           )
+    val newProperties = (firstIteration++noFolloweeMap).join(propertiesMap)
+    val newVertices =  (newProperties).leftOuterJoin(edges).map{
+      case (a, ((b, c), d)) => (a, ((b, c), d.getOrElse(0L)))
+    }
+    val newEdges = aggregateEdges
+    val newGraph = Graph(newProperties, newEdges)
+    val secondIteration: VertexRDD[(Double, Long)] = newGraph.aggregateMessages(
+        triplet => {
+          val vertex = triplet.dstAttr._1//map(vertex => (vertex, triplet.srcAttr._1))
+          triplet.sendToSrc(vertex)
+           },
+        (a, b) =>
+          if(a._1 > b._1){
+            (a._1, a._2)
+          }else{
+            (b._1, b._2)
+          }
+         )
+      val output = (noFolloweeMap++secondIteration).map(tuples => s"${tuples._1}\t${tuples._2._2}\t${tuples._2._1}")
+      output.saveAsTextFile("hdfs:///task3-output")
+      sc.stop()
+  }
+}

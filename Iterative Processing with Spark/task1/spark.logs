@@ -1,0 +1,121 @@
+Using properties file: /usr/lib/spark/conf/spark-defaults.conf
+Adding default property: spark.sql.warehouse.dir=hdfs:///user/spark/warehouse
+Adding default property: spark.executor.extraJavaOptions=-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 -XX:MaxHeapFreeRatio=70 -XX:+CMSClassUnloadingEnabled -XX:OnOutOfMemoryError='kill -9 %p'
+Adding default property: spark.history.fs.logDirectory=hdfs:///var/log/spark/apps
+Adding default property: spark.eventLog.enabled=true
+Adding default property: spark.shuffle.service.enabled=true
+Adding default property: spark.driver.extraLibraryPath=/usr/lib/hadoop/lib/native:/usr/lib/hadoop-lzo/lib/native
+Adding default property: spark.yarn.historyServer.address=ip-172-31-11-218.ec2.internal:18080
+Adding default property: spark.driver.memory=5585M
+Adding default property: spark.executor.instances=6
+Adding default property: spark.default.parallelism=48
+Adding default property: spark.driver.extraJavaOptions=-XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 -XX:MaxHeapFreeRatio=70 -XX:+CMSClassUnloadingEnabled -XX:OnOutOfMemoryError='kill -9 %p'
+Adding default property: spark.master=yarn
+Adding default property: spark.executor.extraLibraryPath=/usr/lib/hadoop/lib/native:/usr/lib/hadoop-lzo/lib/native
+Adding default property: spark.executor.memory=4771M
+Adding default property: spark.driver.extraClassPath=/usr/lib/hadoop-lzo/lib/*:/usr/lib/hadoop/hadoop-aws.jar:/usr/share/aws/aws-java-sdk/*:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*:/usr/share/aws/emr/security/conf:/usr/share/aws/emr/security/lib/*
+Adding default property: spark.eventLog.dir=hdfs:///var/log/spark/apps
+Adding default property: spark.dynamicAllocation.enabled=true
+Adding default property: spark.executor.extraClassPath=/usr/lib/hadoop-lzo/lib/*:/usr/lib/hadoop/hadoop-aws.jar:/usr/share/aws/aws-java-sdk/*:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*:/usr/share/aws/emr/security/conf:/usr/share/aws/emr/security/lib/*
+Adding default property: spark.executor.cores=4
+Adding default property: spark.history.ui.port=18080
+Adding default property: spark.hadoop.yarn.timeline-service.enabled=false
+Parsed arguments:
+  master                  yarn
+  deployMode              null
+  executorMemory          4771M
+  executorCores           4
+  totalExecutorCores      null
+  propertiesFile          /usr/lib/spark/conf/spark-defaults.conf
+  driverMemory            5585M
+  driverCores             null
+  driverExtraClassPath    /usr/lib/hadoop-lzo/lib/*:/usr/lib/hadoop/hadoop-aws.jar:/usr/share/aws/aws-java-sdk/*:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*:/usr/share/aws/emr/security/conf:/usr/share/aws/emr/security/lib/*
+  driverExtraLibraryPath  /usr/lib/hadoop/lib/native:/usr/lib/hadoop-lzo/lib/native
+  driverExtraJavaOptions  -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 -XX:MaxHeapFreeRatio=70 -XX:+CMSClassUnloadingEnabled -XX:OnOutOfMemoryError='kill -9 %p'
+  supervise               false
+  queue                   null
+  numExecutors            6
+  files                   null
+  pyFiles                 null
+  archives                null
+  mainClass               Follower
+  primaryResource         file:/home/hadoop/p42.jar
+  name                    Follower
+  childArgs               []
+  jars                    null
+  packages                null
+  packagesExclusions      null
+  repositories            null
+  verbose                 true
+
+Spark properties used, including those specified through
+ --conf and those from the properties file /usr/lib/spark/conf/spark-defaults.conf:
+  spark.default.parallelism -> 48
+  spark.executor.extraLibraryPath -> /usr/lib/hadoop/lib/native:/usr/lib/hadoop-lzo/lib/native
+  spark.hadoop.yarn.timeline-service.enabled -> false
+  spark.executor.memory -> 4771M
+  spark.driver.memory -> 5585M
+  spark.sql.warehouse.dir -> hdfs:///user/spark/warehouse
+  spark.driver.extraLibraryPath -> /usr/lib/hadoop/lib/native:/usr/lib/hadoop-lzo/lib/native
+  spark.executor.instances -> 6
+  spark.yarn.historyServer.address -> ip-172-31-11-218.ec2.internal:18080
+  spark.eventLog.enabled -> true
+  spark.history.ui.port -> 18080
+  spark.executor.extraJavaOptions -> -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 -XX:MaxHeapFreeRatio=70 -XX:+CMSClassUnloadingEnabled -XX:OnOutOfMemoryError='kill -9 %p'
+  spark.shuffle.service.enabled -> true
+  spark.history.fs.logDirectory -> hdfs:///var/log/spark/apps
+  spark.driver.extraJavaOptions -> -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 -XX:MaxHeapFreeRatio=70 -XX:+CMSClassUnloadingEnabled -XX:OnOutOfMemoryError='kill -9 %p'
+  spark.eventLog.dir -> hdfs:///var/log/spark/apps
+  spark.executor.extraClassPath -> /usr/lib/hadoop-lzo/lib/*:/usr/lib/hadoop/hadoop-aws.jar:/usr/share/aws/aws-java-sdk/*:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*:/usr/share/aws/emr/security/conf:/usr/share/aws/emr/security/lib/*
+  spark.master -> yarn
+  spark.dynamicAllocation.enabled -> true
+  spark.executor.cores -> 4
+  spark.driver.extraClassPath -> /usr/lib/hadoop-lzo/lib/*:/usr/lib/hadoop/hadoop-aws.jar:/usr/share/aws/aws-java-sdk/*:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*:/usr/share/aws/emr/security/conf:/usr/share/aws/emr/security/lib/*
+
+    
+Main class:
+Follower
+Arguments:
+
+System properties:
+spark.default.parallelism -> 48
+spark.executor.extraLibraryPath -> /usr/lib/hadoop/lib/native:/usr/lib/hadoop-lzo/lib/native
+spark.hadoop.yarn.timeline-service.enabled -> false
+spark.driver.memory -> 5585M
+spark.executor.memory -> 4771M
+spark.executor.instances -> 6
+spark.driver.extraLibraryPath -> /usr/lib/hadoop/lib/native:/usr/lib/hadoop-lzo/lib/native
+spark.sql.warehouse.dir -> hdfs:///user/spark/warehouse
+spark.yarn.historyServer.address -> ip-172-31-11-218.ec2.internal:18080
+spark.eventLog.enabled -> true
+spark.history.ui.port -> 18080
+SPARK_SUBMIT -> true
+spark.executor.extraJavaOptions -> -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 -XX:MaxHeapFreeRatio=70 -XX:+CMSClassUnloadingEnabled -XX:OnOutOfMemoryError='kill -9 %p'
+spark.app.name -> Follower
+spark.shuffle.service.enabled -> true
+spark.history.fs.logDirectory -> hdfs:///var/log/spark/apps
+spark.driver.extraJavaOptions -> -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 -XX:MaxHeapFreeRatio=70 -XX:+CMSClassUnloadingEnabled -XX:OnOutOfMemoryError='kill -9 %p'
+spark.jars -> file:/home/hadoop/p42.jar
+spark.submit.deployMode -> client
+spark.executor.extraClassPath -> /usr/lib/hadoop-lzo/lib/*:/usr/lib/hadoop/hadoop-aws.jar:/usr/share/aws/aws-java-sdk/*:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*:/usr/share/aws/emr/security/conf:/usr/share/aws/emr/security/lib/*
+spark.eventLog.dir -> hdfs:///var/log/spark/apps
+spark.master -> yarn
+spark.dynamicAllocation.enabled -> true
+spark.executor.cores -> 4
+spark.driver.extraClassPath -> /usr/lib/hadoop-lzo/lib/*:/usr/lib/hadoop/hadoop-aws.jar:/usr/share/aws/aws-java-sdk/*:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*:/usr/share/aws/emr/security/conf:/usr/share/aws/emr/security/lib/*
+Classpath elements:
+file:/home/hadoop/p42.jar
+
+
+java.lang.ClassNotFoundException: Follower
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:381)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:348)
+	at org.apache.spark.util.Utils$.classForName(Utils.scala:225)
+	at org.apache.spark.deploy.SparkSubmit$.org$apache$spark$deploy$SparkSubmit$$runMain(SparkSubmit.scala:686)
+	at org.apache.spark.deploy.SparkSubmit$.doRunMain$1(SparkSubmit.scala:185)
+	at org.apache.spark.deploy.SparkSubmit$.submit(SparkSubmit.scala:210)
+	at org.apache.spark.deploy.SparkSubmit$.main(SparkSubmit.scala:124)
+	at org.apache.spark.deploy.SparkSubmit.main(SparkSubmit.scala)

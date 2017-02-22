@@ -1,0 +1,7 @@
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkConf
+val file = spark.textFile("/input/test")
+val counts = file.flatMap(line => line.split(" "))
+  .map(word => (word, 1))
+  .reduceByKey(_ + _)
+counts.saveAsTextFile("/output")
