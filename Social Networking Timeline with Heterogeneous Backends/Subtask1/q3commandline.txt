@@ -1,0 +1,3 @@
+mongoimport --db task3 --collection posts --drop --file posts.json
+use task3
+db.posts.createIndex({"timestamp":1})
