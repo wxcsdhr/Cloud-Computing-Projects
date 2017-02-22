@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.util.Properties"/>
+<fullyQualifiedTypeName name="kafka.producer.ProducerConfig"/>
+<fullyQualifiedTypeName name="kafka.producer.Producer"/>
+<fullyQualifiedTypeName name="org.apache.kafka.clients.producer.Producer"/>
+<fullyQualifiedTypeName name="org.apache.kafka.clients.producer.ProducerConfig"/>
+<fullyQualifiedTypeName name="org.apache.kafka.clients.producer.KafkaProducer"/>
+<fullyQualifiedTypeName name="java.io.BufferedReader"/>
+<fullyQualifiedTypeName name="java.io.FileReader"/>
+<fullyQualifiedTypeName name="org.apache.kafka.clients.producer.ProducerRecord"/>
+<fullyQualifiedTypeName name="kafka.producer.KeyedMessage"/>
+<fullyQualifiedTypeName name="org.apache.samza.storage.kv.KeyValueStore"/>
+<fullyQualifiedTypeName name="org.json.JSONObject"/>
+<fullyQualifiedTypeName name="org.apache.samza.storage.kv.KeyValueIterator"/>
+<fullyQualifiedTypeName name="java.util.Map.Entry"/>
+<fullyQualifiedTypeName name="org.apache.samza.storage.kv.Entry"/>
+<fullyQualifiedTypeName name="java.lang.Double"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+</qualifiedTypeNameHistroy>

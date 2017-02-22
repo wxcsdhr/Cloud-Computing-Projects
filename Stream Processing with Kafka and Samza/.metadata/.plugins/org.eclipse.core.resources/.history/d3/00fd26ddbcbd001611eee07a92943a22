@@ -1,0 +1,171 @@
+package com.cloudcomputing.samza.pitt_cabs;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.samza.config.Config;
+import org.apache.samza.storage.kv.Entry;
+import org.apache.samza.storage.kv.KeyValueIterator;
+import org.apache.samza.storage.kv.KeyValueStore;
+import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.system.OutgoingMessageEnvelope;
+import org.apache.samza.task.InitableTask;
+import org.apache.samza.task.MessageCollector;
+import org.apache.samza.task.StreamTask;
+import org.apache.samza.task.TaskContext;
+import org.apache.samza.task.TaskCoordinator;
+import org.apache.samza.task.WindowableTask;
+import org.json.JSONObject;
+
+/**
+ * Consumes the stream of driver location updates and rider cab requests.
+ * Outputs a stream which joins these 2 streams and gives a stream of rider to
+ * driver matches.
+ */
+public class DriverMatchTask implements StreamTask, InitableTask, WindowableTask {
+
+    /* Define per task state here. (kv stores etc) */
+    private double MAX_MONEY = 100.0;
+    private KeyValueStore<String, String> driverLocations;
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    public void init(Config config, TaskContext context) throws Exception {
+    	driverLocations = (KeyValueStore<String, String>)context.getStore("driver-loc");
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) {
+        // The main part of your code. Remember that all the messages for a
+        // particular partition
+        // come here (somewhat like MapReduce). So for task 1 messages for a
+        // blockId will arrive
+        // at one task only, thereby enabling you to do stateful stream
+        // processing.
+        String incomingStream = envelope.getSystemStreamPartition().getStream();
+        if (incomingStream.equals(DriverMatchConfig.DRIVER_LOC_STREAM.getStream())) {
+	    // Handle Driver Location messages
+        	Map<String, Object> map = (HashMap<String, Object>)envelope.getMessage();
+        	int driverId = (int)map.get("driverId");
+        	int blockId = (int)map.get("blockId");
+        	double la = (double)map.get("latitude");
+        	double lo = (double)map.get("longitude");
+        	String key = blockId + ":" + driverId;
+        	JSONObject value = new JSONObject();
+        	value.put("longitude", lo);
+        	value.put("latitude", la);
+        	value.put("salary", 0);
+        	value.put("rating", 0.0);
+        	value.put("gender", "");
+        	driverLocations.put(key, value.toString());
+
+        } else if (incomingStream.equals(DriverMatchConfig.EVENT_STREAM.getStream())) {
+	    // Handle Event messages
+        	Map<String, Object> map = (Map<String, Object>)envelope.getMessage();
+        	String type = (String)map.get("type");
+        	if(type.equals("ENTERING_BLOCK") || type.equals("RIDE_COMPLETE")){
+        		int driverId = (int)map.get("driverId");
+        		int blockId = (int)map.get("blockId");
+        		double la = (double)map.get("latitude");
+        		double lo = (double)map.get("longitude");
+        		String key = blockId + ":" + driverId;
+        		if(type.equals("ENTERING_BLOCK") && ((String)map.get("status")).equals("UNAVAILABLE")){
+        			map.remove(key);
+        		}else{
+        			JSONObject value = new JSONObject();
+        			value.put("rating", map.get("rating"));
+        			value.put("salary", (int)map.get("salary"));
+        			value.put("gender", (String)map.get("gender"));
+        			value.put("longitude", lo);
+        			value.put("latitude", la);
+//        			System.out.println("key: " + key);
+//        			System.out.println(key.equals("5443:3333"));
+//        			System.out.println("value: " + value.toString());
+        			driverLocations.put(key, value.toString());
+        		}
+        	}else if(type.equals("LEAVING_BLOCK")){
+        		int driverId = (int)map.get("driverId");
+        		int blockId = (int)map.get("blockId");
+        		String key = blockId + ":" + driverId;
+        		driverLocations.delete(key);
+        	}else if (type.equals("RIDE_REQUEST")){
+        		int blockId = (int)map.get("blockId");
+        		int clientId = (int)map.get("clientId");
+        		double la = (double)map.get("latitude");
+        		double lo = (double)map.get("longitude");
+        		String genderPref = (String)map.get("gender_preference");
+        		KeyValueIterator<String, String> it = driverLocations.range(blockId + ":", blockId + ";");
+        		//find the driver with highest score.
+        		double highestScore = Double.MIN_VALUE;
+        		int highestScoreDriverId = 0;
+//        		System.out.println(it.hasNext());
+        		String scores = "";
+        		while(it.hasNext()){
+        			Entry<String, String> entry = it.next();
+        			int driverId = Integer.valueOf(entry.getKey().split(":")[1]);
+        			JSONObject driverProfile = new JSONObject(entry.getValue());
+        			String gender = driverProfile.getString("gender");
+        			double driverLa = driverProfile.getDouble("latitude");
+        			double driverLo = driverProfile.getDouble("longitude");
+        			double rating = driverProfile.getDouble("rating");
+        			int salary = driverProfile.getInt("salary");
+        			double distanceScore = getDistanceScore(la, lo, driverLa, driverLo);
+        			double genderScore = getGenderScore(genderPref, gender);
+        			double ratingScore = getRatingScore(rating);
+        			double salaryScore = getSalaryScore(salary);
+        			double matchScore = getMatchScore(distanceScore, genderScore, ratingScore, salaryScore);
+        			scores = "distanceScore: " + distanceScore + "genderScore: " + genderScore + "ratingScore" + ratingScore
+   						 + "salaryScore: " + salaryScore + "matchScore: " + matchScore;
+        			if(matchScore > highestScore){
+        				highestScore = matchScore;
+        				highestScoreDriverId = driverId;
+        				
+        			}
+        		}
+        		it.close();
+        		JSONObject message = new JSONObject();
+        		message.put("clientId", clientId);
+        		message.put("driverId", highestScoreDriverId);
+        		collector.send(new OutgoingMessageEnvelope(DriverMatchConfig.MATCH_STREAM, message.toString()));
+        	}
+
+        } else {
+            throw new IllegalStateException("Unexpected input stream: " + envelope.getSystemStreamPartition());
+        }
+    }
+    
+    private double getDistanceScore(double clientLa, double clientLo, double driverLa, double driverLo){
+    	double euc = Math.pow(Math.pow((clientLa - driverLa), 2) + Math.pow((clientLo - driverLo), 2), 0.5);
+    	double ds = Math.pow(Math.E, -1.0*euc);
+    	return ds;
+    }
+    
+    private double getGenderScore(String prefer, String driverGender){
+    	if(prefer.equals("N")){
+    		return 1;
+    	}
+    	if(prefer.equals(driverGender)){
+    		return 1.0;
+    	}else{
+    		return 0;
+    	}
+    }
+    
+    private double getRatingScore(double rating){
+    	return rating/5.0;
+    }
+    
+    private double getSalaryScore(int salary){
+    	return 1.0 - salary /100.0;
+    }
+    
+    private double getMatchScore(double distanceScore, double genderScore, double ratingScore, double salaryScore){
+    	return distanceScore * 0.4 + genderScore * 0.2 + ratingScore * 0.2 + salaryScore * 0.2;
+    }
+    
+    @Override
+    public void window(MessageCollector collector, TaskCoordinator coordinator) {
+        // this function is called at regular intervals, not required for this
+        // project
+    }
+}

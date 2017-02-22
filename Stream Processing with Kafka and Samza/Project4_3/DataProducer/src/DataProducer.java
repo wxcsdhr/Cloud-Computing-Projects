@@ -1,0 +1,59 @@
+import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.json.JSONObject;
+public class DataProducer {
+	
+	private static final String DRIVER_LOCATION = "DRIVER_LOCATION";
+	private static final String[] EVENTS = {"LEAVING_BLOCK", "ENTERING_BLOCK", "RIDE_REQUEST", "RIDE_COMPLETE"};
+    public static void main(String[] args) throws IOException {
+        /*
+            Task 1:
+            In Task 1, you need to read the content in the tracefile we give to you, 
+            and create two streams, feed the messages in the tracefile to different 
+            streams based on the value of "type" field in the JSON string.
+
+            Please note that you're working on an ec2 instance, but the streams should
+            be sent to your samza cluster. Make sure you can consume the topics on the
+            master node of your samza cluster before make a submission. 
+        */
+    	Properties props = new Properties();
+    	props.put("bootstrap.servers", "172.31.2.47:9092,172.31.11.199:9092,172.31.12.21:9092");
+    	props.put("acks", "all");
+    	props.put("retries", 0);
+    	props.put("batch.size", 16384);
+        props.put("linger.ms", 1);
+        props.put("buffer.memory", 33554432);
+    	props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+    	props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+    	Producer<String, String> producer = new KafkaProducer<String, String>(props);
+    	//load file for trace file
+    	BufferedReader br = new BufferedReader(new FileReader("tracefile"));
+    	String line;
+    	List<String> entries = Arrays.asList(EVENTS);
+    	while((line = br.readLine()) != null){
+    		JSONObject entry = new JSONObject(line);
+    		String broker = "";
+    		String blockId = Integer.toString(entry.getInt("blockId"));
+    		if(entry.getString("type").equals(DRIVER_LOCATION)){ // driver locations type
+    			broker = "driver-locations";
+    			System.out.println(broker + "\t" + entry.toString());
+    			producer.send(new ProducerRecord<String, String>(broker, blockId, line));
+    		}else if (entries.contains(entry.getString("type"))) { // event type
+    			broker = "events";
+    			System.out.println(broker + "\t" + entry.toString());
+    			producer.send(new ProducerRecord<String, String>(broker, blockId, line));
+    		}
+    	}
+    	br.close();
+    	producer.close();
+    	
+    }
+}
