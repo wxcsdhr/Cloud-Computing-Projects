@@ -1,0 +1,15 @@
+
+[1]use of docker py
+https://docker-py.readthedocs.io/en/stable/api/#client-api
+
+[2]ruby docker file
+https://github.com/docker-library/ruby/blob/1bfd61b7b247fef496cf392fa2fc3d1d6d32467e/2.1/alpine/Dockerfile
+
+[3]perl dockerfile
+https://github.com/perl/docker-perl/blob/7e333260aac375a11f63d632eec38db2454ace7e/5.024.000-64bit/Dockerfile
+
+[4] lua dockerfile
+https://hub.docker.com/r/jimho/lua/~/dockerfile/
+
+[5] python dockerfile
+https://github.com/docker-library/python/blob/855b85c8309e925814dfa97d61310080dcd08db6/2.7/alpine/Dockerfile

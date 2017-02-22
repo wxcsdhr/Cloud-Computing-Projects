@@ -1,0 +1,8 @@
+lua layer from:
+[0]https://github.com/jagregory/docker-lua/blob/master/Dockerfile
+
+how to run shell command in python
+[1]http://stackoverflow.com/questions/16198546/get-exit-code-and-stderr-from-subprocess-call
+
+how to use request.post
+[2]http://flask.pocoo.org/docs/0.11/quickstart/
