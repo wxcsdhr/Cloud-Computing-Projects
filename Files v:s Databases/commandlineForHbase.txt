@@ -1,0 +1,7 @@
+$ mkdir P3_1
+$ cd P3_1/
+$ wget https://cmucc-datasets.s3.amazonaws.com/million-songs/million_songs_metadata.csv
+$ wget https://cmucc-datasets.s3.amazonaws.com/million-songs/million_songs_sales_data.csv
+$ hadoop fs -put million_songs_sales_data.csv million_songs_sales_data.csv
+$ hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.columns="HBASE_ROW_KEY,data:title,data:song_id,data:release,data:artist_id,data:artist_mbid,data:artist_name,data:duration,data:artist_familiarity,data:artist_hotttnesss,data:year" -Dimporttsv.separator="," songdata million_songs_metadata.csv
+$ hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles million_songs_metadata.csv songdata
