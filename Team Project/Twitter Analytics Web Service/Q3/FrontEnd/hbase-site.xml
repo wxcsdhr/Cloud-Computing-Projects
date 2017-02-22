@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+/**
+ * Copyright 2010 The Apache Software Foundation
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<configuration>
+  <property>
+    <name>hbase.cluster.distributed</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>hbase.zookeeper.quorum</name>
+    <value>ip-172-31-29-54.ec2.internal</value>
+  </property>
+
+  <property>
+    <name>hbase.rootdir</name>
+    <value>hdfs://ip-172-31-29-54.ec2.internal:8020/user/hbase</value>
+  </property>
+  
+  <property>
+    <name>hbase.regionserver.global.memstore.size</name>
+    <value>0.2</value>
+    <description>Maximum size of all memstores in a region server before new
+      updates are blocked and flushes are forced. Defaults to 40% of heap (0.4).
+      Updates are blocked and flushes are forced until size of all memstores
+      in a region server hits hbase.regionserver.global.memstore.size.lower.limit.
+      The default value in this configuration has been intentionally left empty in order to
+      honor the old hbase.regionserver.global.memstore.upperLimit property if present.
+    </description>
+  </property>
+
+  <property>
+    <name>hfile.block.cache.size</name>
+    <value>0.6</value>
+    <description>Percentage of maximum heap (-Xmx setting) to allocate to block cache
+        used by a StoreFile. Default of 0.4 means allocate 40%.
+        Set to 0 to disable but it's not recommended; you need at least
+        enough cache to hold the storefile indices.</description>
+  </property>
+  <property>
+    <name>dfs.support.append</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>hbase.rest.port</name>
+    <value>8070</value>
+  </property>
+
+
+
+
+</configuration>
