@@ -1,0 +1,23 @@
+INDEX VERSION 1.129+/Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AWSPart/.metadata/.plugins/org.eclipse.jdt.core
+1171631199.index
+1531853853.index
+731891434.index
+2068089175.index
+1430650412.index
+2818479773.index
+3096133428.index
+2615926642.index
+422315262.index
+23785059.index
+860214790.index
+1700857488.index
+3486964417.index
+1708479338.index
+2355397030.index
+1419920669.index
+3909767233.index
+2559660389.index
+607250793.index
+1689425152.index
+338540320.index
+2689474711.index

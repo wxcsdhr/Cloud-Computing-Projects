@@ -1,0 +1,71 @@
+2016-09-23 09:41:53,691 [Worker-2] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2016-09-23 09:42:29,436 [Worker-1] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-deploy-plugin/2.7/maven-deploy-plugin-2.7.jar
+2016-09-23 09:42:29,484 [Worker-1] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-deploy-plugin/2.7/maven-deploy-plugin-2.7.jar
+2016-09-23 09:42:29,552 [Worker-1] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-site-plugin/3.3/maven-site-plugin-3.3.jar
+2016-09-23 09:42:29,631 [Worker-1] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-site-plugin/3.3/maven-site-plugin-3.3.jar
+2016-09-23 09:42:30,011 [Worker-1] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.microsoft.azure:tutorial:1.0-SNAPSHOT @ /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/pom.xml.
+2016-09-23 09:42:30,387 [Worker-1] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /Horizontal_Scaling/src/main/java
+2016-09-23 09:42:30,388 [Worker-1] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /Horizontal_Scaling/src/test/java
+2016-09-23 09:42:32,458 [Worker-1] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 3 sec
+2016-09-23 09:42:33,184 [Worker-11] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 09:42:33,184 [Worker-11] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 09:42:33,187 [Worker-11] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 09:42:33,187 [Worker-11] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-23 09:43:05,260 [Worker-10] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 09:43:05,260 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 09:43:05,262 [Worker-10] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 09:43:05,263 [Worker-10] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-23 09:43:17,319 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 09:43:17,321 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 09:43:17,323 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 09:43:17,323 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-23 10:20:52,634 [Worker-3] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 10:20:52,638 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 10:20:52,639 [Worker-3] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 10:20:52,640 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-23 10:42:21,135 [Worker-32] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 10:42:21,135 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 10:42:21,137 [Worker-32] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 10:42:21,137 [Worker-32] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-23 10:43:44,194 [Worker-34] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 10:43:44,194 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 10:43:44,196 [Worker-34] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 10:43:44,196 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-23 21:05:54,443 [Worker-1] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is out-of-date. Trying to update.
+2016-09-23 21:05:55,896 [Worker-3] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:05:55,906 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 21:05:55,909 [Worker-3] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:05:55,909 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-23 21:06:01,378 [Worker-6] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:06:01,379 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 21:06:01,381 [Worker-6] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:06:01,381 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-23 21:06:18,289 [Worker-8] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:06:18,289 [Worker-8] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 21:06:18,291 [Worker-8] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:06:18,292 [Worker-8] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-23 21:08:10,845 [Worker-3] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:08:10,845 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 21:08:10,847 [Worker-3] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:08:10,847 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-23 21:08:17,448 [Worker-11] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:08:17,448 [Worker-11] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 21:08:17,450 [Worker-11] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:08:17,450 [Worker-11] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-23 21:08:21,855 [Worker-11] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:08:21,856 [Worker-11] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 21:08:21,857 [Worker-11] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:08:21,857 [Worker-11] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-23 21:08:35,630 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:08:35,631 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-23 21:08:35,633 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-23 21:08:35,633 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-24 10:35:42,080 [Worker-0] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2016-09-24 10:35:48,171 [Worker-6] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-24 10:35:48,173 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-24 10:35:48,176 [Worker-6] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-24 10:35:48,176 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-24 11:10:21,983 [Worker-28] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-24 11:10:21,987 [Worker-28] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-24 11:10:21,990 [Worker-28] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-24 11:10:21,991 [Worker-28] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources

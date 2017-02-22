@@ -1,0 +1,315 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import org.ini4j.Ini;
+
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.ec2.AmazonEC2Client;
+import com.amazonaws.services.ec2.model.AuthorizeSecurityGroupIngressRequest;
+import com.amazonaws.services.ec2.model.CreateSecurityGroupRequest;
+import com.amazonaws.services.ec2.model.CreateSecurityGroupResult;
+import com.amazonaws.services.ec2.model.CreateTagsRequest;
+import com.amazonaws.services.ec2.model.DescribeInstancesResult;
+import com.amazonaws.services.ec2.model.Instance;
+import com.amazonaws.services.ec2.model.RunInstancesRequest;
+import com.amazonaws.services.ec2.model.RunInstancesResult;
+import com.amazonaws.services.ec2.model.Tag;
+import com.amazonaws.services.ec2.model.IpPermission;
+import com.amazonaws.services.ec2.model.Reservation;
+
+public class AWSHorizontalScaling {
+	public static final String SCURITY_GROUP = "Project21";
+	public static final String DATA_CENTER_IMAGE = "ami-ebd5a9fc";
+	public static final String LOAD_GENERATOR_IMAGE = "ami-08710c1f";
+	public static final String INSTANCE_TYPE = "m3.medium";
+	public static final String ANDREW_ID = "xiaoche1";
+	public static final String SUBMISSION_PASSWORD = "8rqTQU33NyhkZVXTnkph9g";
+	public static void main(String[] args) throws Exception {
+		
+		// Get the Account ID and Security Key
+		Properties properties = new Properties();
+		properties.load(AWSHorizontalScaling.class
+				.getResourceAsStream("/AwsCredentials.properties"));
+
+		BasicAWSCredentials bawsc = new BasicAWSCredentials(properties.getProperty("AWSAccessKeyId"),
+				                                            properties.getProperty("AWSSecretKey"));
+
+		// Create an Amazon EC2 Client
+		AmazonEC2Client ec2 = new AmazonEC2Client(bawsc);
+		
+		// Create Instance Request
+		RunInstancesRequest runInstancesRequest = new RunInstancesRequest();
+		
+		// Create a new security group
+		CreateSecurityGroupRequest csgr = new CreateSecurityGroupRequest();
+		csgr.withGroupName(SCURITY_GROUP).withDescription("My project2.1 security group");
+		CreateSecurityGroupResult createSecurityGroupResult = ec2.createSecurityGroup(csgr);
+		
+		// Set ipPermission
+		IpPermission ipPermission = new IpPermission();
+		ipPermission.withIpRanges("0.0.0.0/0")
+		            .withIpProtocol("-1")
+		            .withFromPort(-1)
+		            .withToPort(-1);
+		
+		// Authorize security group with ipPermission
+		AuthorizeSecurityGroupIngressRequest authorizeSecurityGroupIngressRequest =
+			    new AuthorizeSecurityGroupIngressRequest();
+		authorizeSecurityGroupIngressRequest.withGroupName(SCURITY_GROUP)
+			                                .withIpPermissions(ipPermission);
+		ec2.authorizeSecurityGroupIngress(authorizeSecurityGroupIngressRequest);
+		String securityGroup = csgr.toString();
+		System.out.println("The security group generated is: " + securityGroup);
+		
+		// Configure data center request
+		runInstancesRequest.withImageId(DATA_CENTER_IMAGE)
+				.withInstanceType(INSTANCE_TYPE)
+				.withMinCount(1)
+				.withMaxCount(1)
+				.withKeyName("Project21")
+				.withSecurityGroups(SCURITY_GROUP);
+
+		// Launch data center instance
+		RunInstancesResult runInstancesResult = ec2
+				.runInstances(runInstancesRequest);
+		
+		// Get instance ID of data center instance:
+		Instance data_Center = runInstancesResult.getReservation().getInstances().get(0);
+		
+		// Add a Tag to the data center instance
+		CreateTagsRequest createTagsRequest = new CreateTagsRequest();
+		createTagsRequest.withResources(data_Center.getInstanceId())
+		                  .withTags(new Tag("Project", "2.1"));
+		ec2.createTags(createTagsRequest);
+		
+		// Print data center instance ID
+		String dataCenterID = data_Center.getInstanceId();
+		System.out.println("Just launched a data center instance with ID: " + dataCenterID);		
+		
+		
+		// Get data center instance DNS
+		String dataCenterDNS = getInstancePublicDNSName(dataCenterID, ec2);
+		System.out.println("Just launched an data center instance with dns: " + dataCenterDNS);
+		
+		//Load load generator
+		runInstancesRequest = new RunInstancesRequest();
+		// Configure load generator request
+		runInstancesRequest.withImageId(LOAD_GENERATOR_IMAGE)
+				.withInstanceType(INSTANCE_TYPE)
+				.withMinCount(1)
+				.withMaxCount(1)
+				.withKeyName("Project21")
+				.withSecurityGroups(SCURITY_GROUP);
+
+		// Launch load generator instance
+		runInstancesResult = ec2
+				.runInstances(runInstancesRequest);
+		
+		// Get instance ID of load generator instance:
+		Instance load_Generator = runInstancesResult.getReservation().getInstances().get(0);
+		
+		// Add a Tag to the load generator instance
+		createTagsRequest = new CreateTagsRequest();
+		createTagsRequest.withResources(load_Generator.getInstanceId())
+		                  .withTags(new Tag("Project", "2.1"));
+		ec2.createTags(createTagsRequest);
+		
+		// Print load generator instance ID
+		String loadGeneratorID = load_Generator.getInstanceId();
+		System.out.println("Just launched a load generator instance with ID: " + loadGeneratorID);		
+		
+		// Get load generator instance DNS
+		String loadGeneratorDNS = getInstancePublicDNSName(loadGeneratorID, ec2);
+		System.out.println("Just launched an load generator instance with dns: " + loadGeneratorDNS);
+//
+		// Let VMs configure
+        Thread.sleep(180000);
+//		// Authenticate with load generator.
+		String authPattern = String.format("http://%s/password?passwd=%s&andrewId=%s",
+				                          loadGeneratorDNS, SUBMISSION_PASSWORD, ANDREW_ID);
+        System.out.println("Start authentiacating load generator.");
+        System.out.println("Authentiacation URL: " + authPattern);
+        getRequest(authPattern);
+        System.out.println("Load generator authtiacation finished.");
+		
+        // Start test
+        int count = 1;
+        String startTest = String.format("http://%s/test/horizontal?dns=%s", loadGeneratorDNS, dataCenterDNS);
+        System.out.println("Start testing");
+        System.out.println("Submit data center VM name: " + startTest);
+        String testID = getTestID(startTest);
+        System.out.println("testID: " + testID);
+        System.out.println("Test submission finished.");
+        System.out.println("Instance count: " + count);
+        
+        // Parse log and add more VMs.
+        String logFile = String.format("http://%s/log?name=test.%s.log", loadGeneratorDNS, testID);
+        float rps = 0;
+        System.out.println("log url: " + logFile);
+        // Let traffic begin
+        System.out.println("Wait for data transfer");
+        Thread.sleep(80000);
+        
+        while((rps = calculateRPS(logFile, dataCenterDNS)) < 3000){
+    		// Configure data center request
+        	runInstancesRequest = new RunInstancesRequest();
+    		runInstancesRequest.withImageId(DATA_CENTER_IMAGE)
+    				.withInstanceType(INSTANCE_TYPE)
+    				.withMinCount(1)
+    				.withMaxCount(1)
+    				.withKeyName("Project21")
+    				.withSecurityGroups(SCURITY_GROUP);
+
+    		// Launch data center instance
+    		runInstancesResult = ec2
+    				.runInstances(runInstancesRequest);
+    		
+    		// Get instance ID of data center instance:
+    		data_Center = runInstancesResult.getReservation().getInstances().get(0);
+    		
+    		// Add a Tag to the data center instance
+    		createTagsRequest = new CreateTagsRequest();
+    		createTagsRequest.withResources(data_Center.getInstanceId())
+    		                  .withTags(new Tag("Project", "2.1"));
+    		ec2.createTags(createTagsRequest);
+    		
+    		// Print data center instance ID
+    		dataCenterID = data_Center.getInstanceId();
+    		System.out.println("Just launched a data center instance with ID: " + dataCenterID);		
+    		
+    		// Get data center instance DNS
+    		dataCenterDNS = getInstancePublicDNSName(dataCenterID, ec2);
+    		System.out.println("Just launched a data center instance with dns: " + dataCenterDNS);
+    		
+    		// Launch new instance and associate it with load generator
+            String addTest = String.format("http://%s/test/horizontal/add?dns=%s",
+                    loadGeneratorDNS, dataCenterDNS);
+            System.out.println("addtest url: "+addTest);
+            System.out.println("Start add new instance");
+            Thread.sleep(120000);
+            getRequest(addTest);
+            System.out.println("Get response: ");
+            System.out.println("add new instance successfully");
+            count++;
+            System.out.println("Instance count: " + count);
+        }
+        
+	}
+	
+	
+	// The following equation inspired from [1].
+	public static String getInstancePublicDNSName(String instanceID, AmazonEC2Client ec2){
+		while(true){
+			DescribeInstancesResult describeInstancesRequest = ec2.describeInstances();
+			List<Reservation> reservations = describeInstancesRequest.getReservations();
+			for(Reservation reservation : reservations){
+				for(Instance instance : reservation.getInstances()){
+					if(instance.getInstanceId().equals(instanceID)){
+						if(instance.getState().getName().equals("running")){
+							return instance.getPublicDnsName();
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	
+	
+    public static String getTestID(String input) throws Exception{
+        URL url = new URL(input);
+        HttpURLConnection request = (HttpURLConnection)url.openConnection();
+        int response = 0;
+        int attemp = 0;
+        while(response != 200){
+            try{
+                request.setRequestMethod("GET");
+                // request.setRequestProperty("User-Agent", "Mozilla/5.0");
+                Thread.sleep(10000);
+                response = request.getResponseCode();
+                if(response != 200){
+                    request = (HttpURLConnection)url.openConnection();
+                }
+                attemp++;
+                System.out.println("Attemp: " + attemp);
+                System.out.println(response);
+                if(attemp > 20){
+                    return null;
+                }
+            }catch(Exception e){
+            }
+        }
+        System.out.println("Get request successfully");
+        BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
+        StringBuffer result = new StringBuffer("");
+        String line;
+        while((line = in.readLine()) != null){
+            result.append(line.split("\\.")[1]);
+        }
+        in.close();
+        return result.toString();
+    }
+	
+	
+    public static void getRequest(String input) throws Exception{
+        URL url = new URL(input);
+        HttpURLConnection request = (HttpURLConnection)url.openConnection();
+        int response = 0;
+        int attemp = 0;
+        while(response != 200){
+            try{
+                request.setRequestMethod("GET");
+                // request.setRequestProperty("User-Agent", "Mozilla/5.0");
+                Thread.sleep(10000);
+                response = request.getResponseCode();
+                if(response != 200){
+                    request = (HttpURLConnection)url.openConnection();
+                }
+                attemp++;
+                if(attemp > 20){
+                    System.exit(1);;
+                }
+                System.out.println("Attemp: " + attemp);
+                System.out.println(response);
+            }catch(Exception e){
+            }
+        }
+    }
+    public static float calculateRPS(String url, String datacenter) throws Exception{
+        URL file = new URL(url);
+        String lastMinute = "";
+        float sum = 0;
+        System.out.println("datacenter: "+datacenter);
+        Ini ini = new Ini(new InputStreamReader(file.openStream()));
+        Set<String> sectionNames = ini.keySet();
+        lastMinute = getLastElement(sectionNames);
+        if(!lastMinute.contains("Minute")){
+            return -1;
+        }
+        Ini.Section currentStatus = ini.get(lastMinute);
+        System.out.println("currentStatus: " + currentStatus);
+        Set<Map.Entry<String, String>>values = currentStatus.entrySet();
+        for(Map.Entry<String, String> vm : values){
+            sum += Float.parseFloat(vm.getValue());
+        }
+        return sum;
+    }
+    public static String getLastElement(Set<String> set) throws Exception{
+        Iterator<String> it = set.iterator();
+        String lastElement = it.next();
+        while(it.hasNext()){
+            lastElement = it.next();
+        }
+        return lastElement;
+    }		
+	
+
+}

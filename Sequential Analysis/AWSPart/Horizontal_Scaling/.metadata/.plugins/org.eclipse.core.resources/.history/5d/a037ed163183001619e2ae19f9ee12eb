@@ -1,0 +1,532 @@
+/**
+ * This is the copy of a working example
+ */
+import com.microsoft.azure.management.compute.ComputeManagementClient;
+import com.microsoft.azure.management.compute.ComputeManagementService;
+import com.microsoft.azure.management.compute.models.*;
+import com.microsoft.azure.management.network.NetworkResourceProviderClient;
+import com.microsoft.azure.management.network.NetworkResourceProviderService;
+import com.microsoft.azure.management.network.models.AzureAsyncOperationResponse;
+import com.microsoft.azure.management.network.models.PublicIpAddressGetResponse;
+import com.microsoft.azure.management.resources.ResourceManagementClient;
+import com.microsoft.azure.management.resources.ResourceManagementService;
+import com.microsoft.azure.management.storage.StorageManagementClient;
+import com.microsoft.azure.management.network.models.DhcpOptions;
+import com.microsoft.azure.management.storage.StorageManagementService;
+import com.microsoft.azure.management.network.models.VirtualNetwork;
+import com.microsoft.azure.utility.AuthHelper;
+import com.microsoft.azure.utility.*;
+import com.microsoft.windowsazure.Configuration;
+import com.microsoft.windowsazure.management.configuration.ManagementConfiguration;
+import org.ini4j.Ini;
+import java.net.HttpURLConnection;
+import java.lang.Math;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.*;
+import java.io.*;
+
+
+public class AzureHorizontalScaling {
+    private static ResourceManagementClient resourceManagementClient;
+    private static StorageManagementClient storageManagementClient;
+    private static ComputeManagementClient computeManagementClient;
+    private static NetworkResourceProviderClient networkResourceProviderClient;
+
+    // the source URI of VHD
+    private static String loadGeneratorVhdUri = "";
+    private static String dataCenterVhdUri = "";
+
+    // configuration for your application token
+    private static String baseURI = "https://management.azure.com/";
+    private static String basicURI = "https://management.core.windows.net/";
+    private static String endpointURL = "https://login.windows.net/";
+
+    private static String subscriptionId = "";
+    private static String tenantID = "";
+    private static String applicationID = "";
+    private static String applicationKey = "";
+    private static String containerAccountName = "";
+    
+    // configuration for your resource account/storage account
+    private static String storageAccountName = "";
+    private static String resourceGroupNameWithVhd = "";
+    private static String loadGeneratorSize = "STANDARD_D1";
+    private static String dataCenterSize = "STANDARD_A1";
+    private static String region = "EastUs";
+    private static String loadGeneratorVMName = "";
+    private static String dataCenterVMName = "";
+    private static String resourceGroupName = "Project2.1";
+
+    // configuration for your virtual machine
+    private static String adminName = "xiaoche1";
+    /**
+      * Password requirements:
+      * 1) Contains an uppercase character
+      * 2) Contains a lowercase character
+      * 3) Contains a numeric digit
+      * 4) Contains a special character.
+      */
+    private static String adminPassword = "cC.15619";
+
+    public AzureHorizontalScaling() throws Exception{
+        Configuration config = createConfiguration();
+        resourceManagementClient = ResourceManagementService.create(config);
+        storageManagementClient = StorageManagementService.create(config);
+        computeManagementClient = ComputeManagementService.create(config);
+        networkResourceProviderClient = NetworkResourceProviderService.create(config);
+    }
+
+    public static Configuration createConfiguration() throws Exception {
+        // get token for authentication
+        String token = AuthHelper.getAccessTokenFromServicePrincipalCredentials(
+                        basicURI,
+                        endpointURL,
+                        tenantID,
+                        applicationID,
+                        applicationKey).getAccessToken();
+
+        // generate Azure sdk configuration manager
+        return ManagementConfiguration.configure(
+                null, // profile
+                new URI(baseURI), // baseURI
+                subscriptionId, // subscriptionId
+                token// token
+                );
+    }
+
+    /***
+     * Create a virtual machine given configurations.
+     *
+     * @param resourceGroupName: a new name for your virtual machine [customized], will create a new one if not already exist
+     * @param vmName: a PUBLIC UNIQUE name for virtual machine
+     * @param resourceGroupNameWithVhd: the resource group where the storage account for VHD is copied
+     * @param sourceVhdUri: the Uri for VHD you copied
+     * @param instanceSize
+     * @param subscriptionId: your Azure account subscription Id
+     * @param storageAccountName: the storage account where you VHD exist
+     * @return created virtual machine IP
+     */
+    public static ResourceContext createVM (
+        String resourceGroupName,
+        String vmName,
+        String resourceGroupNameWithVhd,
+        String sourceVhdUri,
+        String instanceSize,
+        String subscriptionId,
+        String storageAccountName) throws Exception {
+
+        ResourceContext contextVhd = new ResourceContext(
+                region, resourceGroupNameWithVhd, subscriptionId, false);
+        ResourceContext context = new ResourceContext(
+                region, resourceGroupName, subscriptionId, false);
+
+        ComputeHelper.createOrUpdateResourceGroup(resourceManagementClient,context);
+        context.setStorageAccountName(storageAccountName);
+        contextVhd.setStorageAccountName(storageAccountName);
+        context.setStorageAccount(StorageHelper.getStorageAccount(storageManagementClient,contextVhd));
+
+        if (context.getNetworkInterface() == null) {
+            if (context.getPublicIpAddress() == null) {
+                NetworkHelper
+                    .createPublicIpAddress(networkResourceProviderClient, context);
+            }
+            if (context.getVirtualNetwork() == null) {
+                NetworkHelper
+                    .createVirtualNetwork(networkResourceProviderClient, context);
+            }
+
+            VirtualNetwork vnet =  context.getVirtualNetwork();
+
+            // set DhcpOptions
+            DhcpOptions dop = new DhcpOptions();
+            ArrayList<String> dnsServers = new ArrayList<String>(2);
+            dnsServers.add("8.8.8.8");
+            dop.setDnsServers(dnsServers);
+            vnet.setDhcpOptions(dop);
+
+            try {
+                AzureAsyncOperationResponse response = networkResourceProviderClient.getVirtualNetworksOperations()
+                    .createOrUpdate(context.getResourceGroupName(), context.getVirtualNetworkName(), vnet);
+            } catch (ExecutionException ee) {
+                if (ee.getMessage().contains("RetryableError")) {
+                    AzureAsyncOperationResponse response = networkResourceProviderClient.getVirtualNetworksOperations()
+                        .createOrUpdate(context.getResourceGroupName(), context.getVirtualNetworkName(), vnet);
+                } else {
+                    throw ee;
+                }
+            }
+
+
+            NetworkHelper
+                .createNIC(networkResourceProviderClient, context, context.getVirtualNetwork().getSubnets().get(0));
+
+            NetworkHelper
+                .updatePublicIpAddressDomainName(networkResourceProviderClient, resourceGroupName, context.getPublicIpName(), vmName);
+        }
+
+        System.out.println("[15319/15619] "+context.getPublicIpName());
+        System.out.println("[15319/15619] Start Create VM...");
+
+        try {
+            // name for your VirtualHardDisk
+            String osVhdUri = ComputeHelper.getVhdContainerUrl(context) + String.format("/os%s.vhd", vmName);
+
+            VirtualMachine vm = new VirtualMachine(context.getLocation());
+
+            vm.setName(vmName);
+            vm.setType("Microsoft.Compute/virtualMachines");
+            vm.setHardwareProfile(createHardwareProfile(context, instanceSize));
+            vm.setStorageProfile(createStorageProfile(osVhdUri, sourceVhdUri));
+            vm.setNetworkProfile(createNetworkProfile(context));
+            vm.setOSProfile(createOSProfile(adminName, adminPassword, vmName));
+
+            context.setVMInput(vm);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        // Remove the resource group will remove all assets (VM/VirtualNetwork/Storage Account etc.)
+        // Comment the following line to keep the VM.
+        // resourceManagementClient.getResourceGroupsOperations().beginDeleting(context.getResourceGroupName());
+        // computeManagementClient.getVirtualMachinesOperations().beginDeleting(resourceGroupName,"project2.2");
+        return context;
+        }
+
+    /***
+     * Check public IP address of virtual machine
+     *
+     * @param context
+     * @param vmName
+     * @return public IP
+     */
+    public static String checkVM(ResourceContext context, String vmName) {
+        String ipAddress = null;
+
+        try {
+            VirtualMachine vmHelper = ComputeHelper.createVM(
+                    resourceManagementClient, computeManagementClient, networkResourceProviderClient, storageManagementClient,
+                    context, vmName, "xiaoche1", "313wxcWXC.").getVirtualMachine();
+
+            System.out.println("[15319/15619] "+vmHelper.getName() + " Is Created :)");
+            while(ipAddress == null) {
+                PublicIpAddressGetResponse result = networkResourceProviderClient.getPublicIpAddressesOperations().get(resourceGroupName, context.getPublicIpName());
+                ipAddress = result.getPublicIpAddress().getIpAddress();
+                Thread.sleep(10);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return ipAddress;
+    }
+
+    /***
+     * Create a HardwareProfile for virtual machine
+     *
+     * @param context
+     * @param instanceSize
+     * @return created HardwareProfile
+     */
+    public static HardwareProfile createHardwareProfile(ResourceContext context, String instanceSize) {
+        HardwareProfile hardwareProfile = new HardwareProfile();
+        if (context.getVirtualMachineSizeType()!=null && !context.getVirtualMachineSizeType().isEmpty()) {
+            hardwareProfile.setVirtualMachineSize(context.getVirtualMachineSizeType());
+        } else {
+            hardwareProfile.setVirtualMachineSize(instanceSize);
+        }
+        return hardwareProfile;
+    }
+
+    /***
+     * Create a StorageProfile for virtual machine
+     *
+     * @param osVhdUri
+     * @param sourceVhdUri
+     * @return created StorageProfile
+     */
+    public static StorageProfile createStorageProfile(String osVhdUri, String sourceVhdUri) {
+        StorageProfile storageProfile = new StorageProfile();
+
+        VirtualHardDisk vHardDisk = new VirtualHardDisk();
+        vHardDisk.setUri(osVhdUri);
+        //set source image
+        VirtualHardDisk sourceDisk = new VirtualHardDisk();
+        sourceDisk.setUri(sourceVhdUri);
+
+        OSDisk osDisk = new OSDisk("osdisk", vHardDisk, DiskCreateOptionTypes.FROMIMAGE);
+        osDisk.setSourceImage(sourceDisk);
+        osDisk.setOperatingSystemType(OperatingSystemTypes.LINUX);
+        osDisk.setCaching(CachingTypes.NONE);
+
+        storageProfile.setOSDisk(osDisk);
+
+        return storageProfile;
+    }
+
+    /***
+     * Create a NetworkProfile for virtual machine
+     *
+     * @param context
+     * @return created NetworkProfile
+     */
+    public static NetworkProfile createNetworkProfile(ResourceContext context) {
+        NetworkProfile networkProfile = new NetworkProfile();
+        NetworkInterfaceReference nir = new NetworkInterfaceReference();
+        nir.setReferenceUri(context.getNetworkInterface().getId());
+        ArrayList<NetworkInterfaceReference> nirs = new ArrayList<NetworkInterfaceReference>(1);
+        nirs.add(nir);
+        networkProfile.setNetworkInterfaces(nirs);
+
+        return networkProfile;
+    }
+
+    /***
+     * Create a OSProfile for virtual machine
+     *
+     * @param adminName
+     * @param adminPassword
+     * @param vmName
+     * @return created OSProfile
+     */
+    public static OSProfile createOSProfile(String adminName, String adminPassword, String vmName) {
+        OSProfile osProfile = new OSProfile();
+        osProfile.setAdminPassword(adminPassword);
+        osProfile.setAdminUsername(adminName);
+        osProfile.setComputerName(vmName);
+
+        return osProfile;
+    }
+
+    /**
+     * The main entry for the demo
+     *
+     * args0: resource group
+     * args1: storage account
+     * args2: image name
+     * args3: subscription ID
+     * args4: tenant ID
+     * args5: application ID
+     * args6: application Key
+     */
+    public static void main(String[] args) throws Exception {
+        String seed = String.format("%d%d", (int) System.currentTimeMillis()%1000, (int)(Math.random()*1000));
+        loadGeneratorVMName = String.format("lg%s%s", seed, "vm");
+        dataCenterVMName = String.format("dc%s%s", seed, "vm");
+        resourceGroupName = String.format("cloud%s%s", seed, "ResourceGroup");
+
+        // Obtain informtaion from accountinformation.txt
+        FileReader fileReader = new FileReader(args[0]);
+        BufferedReader information = new BufferedReader(fileReader);
+        String text = information.readLine();
+        subscriptionId = text.split("\t")[0];
+        tenantID = text.split("\t")[1];
+        applicationID = text.split("\t")[2];
+        applicationKey = text.split("\t")[3];
+        resourceGroupNameWithVhd = text.split("\t")[4];
+        storageAccountName = text.split("\t")[5];
+        containerAccountName = text.split("\t")[6];
+        // Image Uri for Load Generator and Data Center.
+        loadGeneratorVhdUri = String.format("https://%s.blob.core.windows.net/%s/Microsoft.Compute/Images/vhds/lgp21f16v3-osDisk.7f5686b8-d969-4bb7-ab57-2e079071e923.vhd", storageAccountName, containerAccountName);
+        dataCenterVhdUri = String.format("https://%s.blob.core.windows.net/%s/Microsoft.Compute/Images/vhds/cc15619p21dcv5-osDisk.e27faca3-f177-40ea-a740-9a1838326ae6.vhd", storageAccountName, containerAccountName);
+
+        // Create load generator VM 
+        System.out.println("Initializing Azure virtual machine:");
+        System.out.println("Load Generator VHD URL: "+loadGeneratorVhdUri);
+        System.out.println("Storage account: "+storageAccountName);
+        System.out.println("Container account: " + containerAccountName);
+        System.out.println("Subscription ID: "+subscriptionId);
+        System.out.println("Tenent ID: "+tenantID);
+        System.out.println("Application ID: "+applicationID);
+        System.out.println("Application Key: "+applicationKey);
+        System.out.println("load Generator VM Name: "+loadGeneratorVMName);
+
+        AzureHorizontalScaling demoVM = new AzureHorizontalScaling();
+
+        System.out.println("[15319/15619] Configured");
+
+        ResourceContext context = createVM (
+                resourceGroupName,
+                loadGeneratorVMName,
+                resourceGroupNameWithVhd,
+                loadGeneratorVhdUri,
+                loadGeneratorSize,
+                subscriptionId,
+                storageAccountName);
+        System.out.println(checkVM(context, loadGeneratorVMName));
+        System.out.println();
+
+        //Create data center VM
+        System.out.println("Initializing Azure virtual machine:");
+        System.out.println("Data Center VHD URL: "+dataCenterVhdUri);
+        System.out.println("Storage account: "+storageAccountName);
+        System.out.println("Container account: " + containerAccountName);
+        System.out.println("Subscription ID: "+subscriptionId);
+        System.out.println("Tenent ID: "+tenantID);
+        System.out.println("Application ID: "+applicationID);
+        System.out.println("Application Key: "+applicationKey);
+        System.out.println("Data Center VM Name: "+dataCenterVMName);
+        System.out.println("[15319/15619] Configured");
+        context = createVM(
+                resourceGroupName,
+                dataCenterVMName,
+                resourceGroupNameWithVhd,
+                dataCenterVhdUri,
+                dataCenterSize,
+                subscriptionId,
+                storageAccountName);
+        System.out.println(checkVM(context, dataCenterVMName));
+
+        // Sleep to let VM configurated
+        Thread.sleep(120000);
+
+        // Authenticate with load generator.
+
+        String authPattern = String.format("http://%s.eastus.cloudapp.azure.com/password?passwd=%s&andrewid=%s",
+                                            loadGeneratorVMName, "8rqTQU33NyhkZVXTnkph9g", "xiaoche1" );
+        System.out.println("Start authentiacating load generator.");
+        System.out.println("Authentiacation URL: " + authPattern);
+        getRequest(authPattern);
+        System.out.println("Load generator authtiacation finished.");
+
+        // Sleep to let VM configurated
+        Thread.sleep(120000);
+        int count = 1;
+        // Start the test
+        String startTest = String.format("http://%s.eastus.cloudapp.azure.com/test/horizontal?dns=%s.eastus.cloudapp.azure.com",
+                                         loadGeneratorVMName, dataCenterVMName);
+        System.out.println("Start testing");
+        System.out.println("Submit data center VM name: " + startTest);
+        String testID = getTestID(startTest);
+        System.out.println("testID: " + testID);
+        System.out.println("Test submission finished.");
+        System.out.println("Instance count: " + count);
+
+        // Parse log and add more VMs.
+        String logFile = String.format("http://%s.eastus.cloudapp.azure.com/log?name=test.%s.log", loadGeneratorVMName, testID);
+        float rps = 0;
+        System.out.println("log url: " + logFile);
+        // Let trafic begin
+        System.out.println("Wait for data transfer");
+        Thread.sleep(60000);
+        
+        while((rps = calculateRPS(logFile, dataCenterVMName)) < 3000.0){
+            //inite new datacenter;
+            System.out.println("RPS: "+ rps);
+            seed = String.format("%d%d", (int) System.currentTimeMillis()%1000, (int)(Math.random()*1000));
+            dataCenterVMName = String.format("dc%s%s", seed, "vm");
+            context = createVM(
+                    resourceGroupName,
+                    dataCenterVMName,
+                    resourceGroupNameWithVhd,
+                    dataCenterVhdUri,
+                    dataCenterSize,
+                    subscriptionId,
+                    storageAccountName);
+            System.out.println(checkVM(context, dataCenterVMName));
+            // Let new data center vm configure.
+            String addTest = String.format("http://%s.eastus.cloudapp.azure.com/test/horizontal/add?dns=%s.eastus.cloudapp.azure.com",
+                                           loadGeneratorVMName, dataCenterVMName);
+
+            // Launch new instance and wait for response
+            System.out.println("addtest url: "+addTest);
+            System.out.println("Start add new instance");
+            Thread.sleep(120000);
+            getRequest(addTest);
+            System.out.println("Get response: ");
+            System.out.println("add new instance successfully");
+            count++;
+            System.out.println("Instance count: " + count);
+        }
+    }
+
+
+    public static String getTestID(String input) throws Exception{
+        URL url = new URL(input);
+        HttpURLConnection request = (HttpURLConnection)url.openConnection();
+        int response = 0;
+        int attemp = 0;
+        while(response != 200){
+            try{
+                request.setRequestMethod("GET");
+                // request.setRequestProperty("User-Agent", "Mozilla/5.0");
+                Thread.sleep(10000);
+                response = request.getResponseCode();
+                if(response != 200){
+                    request = (HttpURLConnection)url.openConnection();
+                }
+                attemp++;
+                System.out.println("Attemp: " + attemp);
+                System.out.println(response);
+                if(attemp > 20){
+                    return null;
+                }
+            }catch(Exception e){
+            }
+        }
+        System.out.println("Get request successfully");
+        BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
+        StringBuffer result = new StringBuffer("");
+        String line;
+        while((line = in.readLine()) != null){
+            result.append(line.split("\\.")[1]);
+        }
+        in.close();
+        return result.toString();
+    }
+
+    public static void getRequest(String input) throws Exception{
+        URL url = new URL(input);
+        HttpURLConnection request = (HttpURLConnection)url.openConnection();
+        int response = 0;
+        int attemp = 0;
+        while(response != 200){
+            try{
+                request.setRequestMethod("GET");
+                // request.setRequestProperty("User-Agent", "Mozilla/5.0");
+                Thread.sleep(10000);
+                response = request.getResponseCode();
+                if(response != 200){
+                    request = (HttpURLConnection)url.openConnection();
+                }
+                attemp++;
+                if(attemp > 20){
+                    System.exit(1);;
+                }
+                System.out.println("Attemp: " + attemp);
+                System.out.println(response);
+            }catch(Exception e){
+            }
+        }
+    }
+    public static float calculateRPS(String url, String dataCenterVMName) throws Exception{
+        URL file = new URL(url);
+        String lastMinute = "";
+        float sum = 0;
+        String datacenter = String.format("http://%s.eastus.cloudapp.azure.com", dataCenterVMName);
+        System.out.println("datacenter: "+datacenter);
+        Ini ini = new Ini(new InputStreamReader(file.openStream()));
+        Set<String> sectionNames = ini.keySet();
+        lastMinute = getLastElement(sectionNames);
+        if(!lastMinute.contains("Minute")){
+            return -1;
+        }
+        Ini.Section currentStatus = ini.get(lastMinute);
+        System.out.println(currentStatus);
+        Set<Map.Entry<String, String>>values = currentStatus.entrySet();
+        for(Map.Entry<String, String> vm : values){
+            System.out.println("data center: " + vm.getKey() + " RPS: " + vm.getValue());
+            sum += Float.parseFloat(vm.getValue());
+        }
+        return sum;
+    }
+    public static String getLastElement(Set<String> set) throws Exception{
+        Iterator<String> it = set.iterator();
+        String lastElement = it.next();
+        while(it.hasNext()){
+            lastElement = it.next();
+        }
+        return lastElement;
+    }
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.util.Properties"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.ec2.model.CreateSecurityGroupResult"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.gamelift.model.IpPermission"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.ec2.AmazonEC2Client"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="com.amazonaws.auth.BasicAWSCredentials"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.ec2.model.RunInstancesRequest"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.ec2.model.CreateSecurityGroupRequest"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.ec2.model.AuthorizeSecurityGroupIngressRequest"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.ec2.model.RunInstancesResult"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.ec2.model.Instance"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.ec2.model.CreateTagsRequest"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.ec2.model.Tag"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.ec2.model.DescribeInstancesResult"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.ec2.model.Reservation"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.net.URL"/>
+<fullyQualifiedTypeName name="java.net.HttpURLConnection"/>
+<fullyQualifiedTypeName name="java.io.InputStreamReader"/>
+<fullyQualifiedTypeName name="java.util.Set"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="java.io.BufferedReader"/>
+<fullyQualifiedTypeName name="java.io.FileReader"/>
+</qualifiedTypeNameHistroy>

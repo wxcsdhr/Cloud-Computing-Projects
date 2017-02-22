@@ -1,0 +1,30 @@
+import com.microsoft.azure.management.compute.ComputeManagementClient;
+import com.microsoft.azure.management.compute.ComputeManagementService;
+import com.microsoft.azure.management.compute.models.*;
+import com.microsoft.azure.management.network.NetworkResourceProviderClient;
+import com.microsoft.azure.management.network.NetworkResourceProviderService;
+import com.microsoft.azure.management.network.models.AzureAsyncOperationResponse;
+import com.microsoft.azure.management.network.models.PublicIpAddressGetResponse;
+import com.microsoft.azure.management.resources.ResourceManagementClient;
+import com.microsoft.azure.management.resources.ResourceManagementService;
+import com.microsoft.azure.management.storage.StorageManagementClient;
+import com.microsoft.azure.management.network.models.DhcpOptions;
+import com.microsoft.azure.management.storage.StorageManagementService;
+import com.microsoft.azure.management.network.models.VirtualNetwork;
+import com.microsoft.azure.utility.AuthHelper;
+import com.microsoft.azure.utility.*;
+import com.microsoft.windowsazure.Configuration;
+import com.microsoft.windowsazure.management.configuration.ManagementConfiguration;
+
+import java.lang.Math;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+public class LoadGenerator {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

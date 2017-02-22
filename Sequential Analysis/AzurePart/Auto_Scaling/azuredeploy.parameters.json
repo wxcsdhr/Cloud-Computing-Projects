@@ -1,0 +1,33 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"vmScalingSetName": {
+			"value": "nick15619loadbalancer"
+		},
+        "storageAccName": {
+			"value": "project21storage"
+        },
+        "resourceGroupNameForStorageAcc": {
+            "value": "Project2.1"
+        },
+		"instanceCount": {
+			"value": 1
+		},
+		"vmSize": {
+			"value": "Standard_A1"
+		},
+		"location": {
+			"value": "East US"
+		},
+		"sourceImageVhdUri": {
+			"value": "https://project21storage.blob.core.windows.net/project21container/Microsoft.Compute/Images/vhds/cc15619p21dcv5-osDisk.e27faca3-f177-40ea-a740-9a1838326ae6.vhd"
+		},
+		"frontEndLBPort": {
+			"value": 80
+		},
+		"backEndLBPort": {
+			"value": 80
+		}
+	}
+}

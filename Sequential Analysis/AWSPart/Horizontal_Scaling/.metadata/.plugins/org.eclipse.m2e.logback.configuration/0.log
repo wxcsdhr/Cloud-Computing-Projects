@@ -1,0 +1,21 @@
+2016-09-25 10:55:29,470 [Worker-3] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2016-09-25 10:56:12,967 [Worker-2] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.microsoft.azure:tutorial:1.0-SNAPSHOT @ /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/pom.xml.
+2016-09-25 10:56:13,752 [Worker-2] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /tutorial/src/main/java
+2016-09-25 10:56:13,754 [Worker-2] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /tutorial/src/test/java
+2016-09-25 10:56:13,832 [Worker-2] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 5 sec
+2016-09-25 10:56:15,307 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-25 10:56:15,308 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-25 10:56:15,312 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-25 10:56:15,313 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-25 11:00:44,172 [Worker-12] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-25 11:00:44,173 [Worker-12] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-25 11:00:44,175 [Worker-12] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-25 11:00:44,176 [Worker-12] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-25 11:02:34,477 [Worker-9] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-25 11:02:34,478 [Worker-9] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-25 11:02:34,479 [Worker-9] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-25 11:02:34,480 [Worker-9] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources
+2016-09-25 11:03:31,404 [Worker-12] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-25 11:03:31,405 [Worker-12] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/main/resources
+2016-09-25 11:03:31,407 [Worker-12] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2016-09-25 11:03:31,407 [Worker-12] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/NickWang/Dropbox/CMU_Academic/S3/15619/Project2/Project2.1/AzurePart/Horizontal_Scaling/src/test/resources

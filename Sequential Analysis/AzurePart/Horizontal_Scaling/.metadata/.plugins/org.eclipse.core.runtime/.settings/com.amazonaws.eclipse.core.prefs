@@ -1,0 +1,10 @@
+1ca0fc5d-4d82-425e-8184-b9001f1f878c\:credentialProfileName=PrivateAWS
+9a4db13e-74c9-44fa-b3f7-1f2c617d00a1\:credentialProfileName=xiaoche1
+cognitoIdentityId=us-east-1\:db03beac-a5fd-4acb-b389-919198607078
+cognitoIdentityPoolId=us-east-1\:d4fdc07f-94fd-4cc6-94fb-f903657f05c1
+credentialProfileAccountIds=1ca0fc5d-4d82-425e-8184-b9001f1f878c|9a4db13e-74c9-44fa-b3f7-1f2c617d00a1
+currentAccount=1ca0fc5d-4d82-425e-8184-b9001f1f878c
+currentDefaultAccount=1ca0fc5d-4d82-425e-8184-b9001f1f878c
+ec2PreferencesImported=true
+eclipse.preferences.version=1
+mobileAnalyticsClientId=c5e63255-642b-44c4-b44d-89709a9cf70b

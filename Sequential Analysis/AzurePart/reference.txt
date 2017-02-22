@@ -1,0 +1,10 @@
+[0]http://ini4j.sourceforge.net/tutorial/IniTutorial.java.html
+
+[1]https://www.mkyong.com/java/how-to-send-http-request-getpost-in-java/
+
+[2]http://stackoverflow.com/questions/1485708/how-do-i-do-a-http-get-in-java
+
+
+[3]http://stackoverflow.com/questions/4550662/how-do-you-find-the-sum-of-all-the-numbers-in-an-array-in-java
+
+[4]http://stackoverflow.com/questions/1602270/ini4j-how-to-get-all-the-key-names-in-a-setting
